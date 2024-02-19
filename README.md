@@ -15,8 +15,6 @@ The main objective of this project is to offer personalized book recommendations
 3. **Book Recommendations:**
    - Based on the selected genre, users will receive a list of recommended books.
 
-4. **Book Details:**
-   - Users can view detailed information about each recommended book, including the author, summary, and user reviews.
-
-5. **Responsive Design:**
+4. **Responsive Design:**
    - The application will provide a seamless experience across various devices.
+
