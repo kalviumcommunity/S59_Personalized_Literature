@@ -17,4 +17,6 @@ The main objective of this project is to offer personalized book recommendations
 
 4. **Responsive Design:**
    - The application will provide a seamless experience across various devices.
+  
+     **Deployed link** : https://s59-personalized-literature-1.onrender.com
 
