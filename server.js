@@ -1,11 +1,21 @@
+const {
+  connectDB,
+  disconnectDB,
+  isConnected,
+} = require("./config/db");
+
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = 8080;
 
 app.get("/", (req, res) => {
-  res.send("Hello");
+  if (isConnected()) {
+    res.send("📦 connected to mongoDB");
+  } else {
+    res.send("❌ error connecting to mongoDB");
+  }
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+  console.log(`App listening at port: ${port}`);
+  connectDB();
