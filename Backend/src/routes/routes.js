@@ -7,11 +7,13 @@ connectDB();
 
 router.get("/:genre", async (req, res) => {
   try {
+    console.log(req.params);
     let BookModel = createBookModel(req.params.genre); 
-
+    
     const booksData = await BookModel.find();
 
     res.send(booksData);
+    console.log(booksData)
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -20,13 +22,17 @@ router.get("/:genre", async (req, res) => {
 
 router.post("/postBook/:genre", async (req, res) => {
   try {
-    
     let BookModel = createBookModel(req.params.genre);
 
-    const newBook = new BookModel(req.body);
-    const savedNewBook = await newBook.save();
-
-    res.status(201).json(savedNewBook);
+    
+    if (Array.isArray(req.body)) {
+      const savedBooks = await BookModel.insertMany(req.body);
+      res.status(201).json(savedBooks);
+    } else {
+      const newBook = new BookModel(req.body);
+      const savedNewBook = await newBook.save();
+      res.status(201).json(savedNewBook);
+    }
   } catch (error) {
     console.log(error)
     res.status(400).json({ error: "Failed to insert data" });
