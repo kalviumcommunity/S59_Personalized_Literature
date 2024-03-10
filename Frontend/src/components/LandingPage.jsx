@@ -1,11 +1,11 @@
-import Navbar from './Navbar.jsx';
+
 import './LandingPage.css';
 import LandingImage from '../assets/landingImage.jpg';
 
 function LandingPage(){
     return (
       <div className="landingDiv">
-        <Navbar />
+     
 
         <div className="container">
           <img src={LandingImage} alt="LandingImage" className="LandingImage" />
