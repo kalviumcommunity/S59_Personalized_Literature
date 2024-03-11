@@ -22,7 +22,7 @@ const Library = () => {
     if (category !== "") {
       let end = category.toLowerCase();
 
-      const api = `http://localhost:8080/${end}`;
+      const api = `https://s59-personalized-literature.onrender.com/${end}`;
       fetch(api)
         .then((res) => res.json())
         .then((data) => {
