@@ -1,9 +1,26 @@
 const express = require("express");
 const router = express.Router();
 const { connectDB } = require("../connection/db");
-const { createBookModel } = require("../model/library"); 
+const { createBookModel } = require("../model/library");
+const Joi = require('joi');
+
 connectDB();
 
+// Defining  a schema for the book data for post,put 
+const bookSchema = Joi.object({
+  title: Joi.string().required(),
+  author: Joi.string().required(),
+  genre: Joi.string().required(),
+  year: Joi.number().integer().min(1000).max(new Date().getFullYear()).required(),
+});
+
+// Defining a schema for partial book data for patch method
+const partialBookSchema = Joi.object({
+  title: Joi.string(),
+  author: Joi.string(),
+  genre: Joi.string(),
+  year: Joi.number().integer().min(1000).max(new Date().getFullYear())
+}).min(1); // At least one key is required for partial update
 
 router.get("/:genre", async (req, res) => {
   try {
@@ -22,9 +39,13 @@ router.get("/:genre", async (req, res) => {
 
 router.post("/postBook/:genre", async (req, res) => {
   try {
+    const { error } = bookSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+
     let BookModel = createBookModel(req.params.genre);
 
-    
     if (Array.isArray(req.body)) {
       const savedBooks = await BookModel.insertMany(req.body);
       res.status(201).json(savedBooks);
@@ -41,6 +62,11 @@ router.post("/postBook/:genre", async (req, res) => {
 
 router.patch("/:genre/:id", async (req, res) => {
   try {
+    const { error } = partialBookSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+
     let BookModel = createBookModel(req.params.genre);
 
     const updateStatus = await BookModel.findByIdAndUpdate(
@@ -61,6 +87,11 @@ router.patch("/:genre/:id", async (req, res) => {
 
 router.put("/:genre/:id", async (req, res) => {
   try {
+    const { error } = bookSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+
     let BookModel = createBookModel(req.params.genre);
 
     const updateStatus = await BookModel.findByIdAndUpdate(
@@ -77,7 +108,6 @@ router.put("/:genre/:id", async (req, res) => {
   }
 });
 
-
 router.delete("/:genre/:id", async (req, res) => {
   try {
     let BookModel = createBookModel(req.params.genre);
@@ -93,6 +123,5 @@ router.delete("/:genre/:id", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
 
 module.exports = { router };
