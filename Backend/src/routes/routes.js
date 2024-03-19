@@ -60,7 +60,6 @@ router.get("/:genre", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 router.post(
   "/postBook/:genre",
   validateRequest(bookSchema),
@@ -82,6 +81,7 @@ router.post(
     }
   }
 );
+
 
 router.patch(
   "/:genre/:id",

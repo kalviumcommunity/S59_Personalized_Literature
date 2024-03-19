@@ -24,9 +24,10 @@ const GenreForm = () => {
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
-        "https://s59-personalized-literature.onrender.com/postBook/:genre",
-        { genre: data.genreOptions }
+        `https://s59-personalized-literature.onrender.com/postBook/${data.genre}`,
+        data
       );
+      console.log(data.genre);
       console.log(response.data);
       // Handle success, e.g., show a success message
     } catch (error) {
