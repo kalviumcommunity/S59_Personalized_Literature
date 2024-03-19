@@ -38,7 +38,7 @@ const GenreForm = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container1">
       <h1>Add a Book</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="field">
@@ -99,7 +99,7 @@ const GenreForm = () => {
             className="userInput"
             {...register("author", { required: true })}
           />
-          {errors.authorName && (
+          {errors.author && (
             <p className="error">Author Name is required</p>
           )}
         </div>
