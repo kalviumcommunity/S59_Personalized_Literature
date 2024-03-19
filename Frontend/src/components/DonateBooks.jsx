@@ -1,6 +1,7 @@
 
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import "./DonateBook.css"
 
 const GenreForm = () => {
   const {
@@ -41,45 +42,69 @@ const GenreForm = () => {
       <h1>Add a Book</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="field">
-          <label htmlFor="bookName">Book Name</label>
-          <input type="text" {...register("bookName", { required: true })} />
+          <strong>Book Name</strong> <br />
+          <input
+            type="text"
+            className="userInput"
+            {...register("bookName", { required: true })}
+          />
           {errors.bookName && <p className="error">Book Name is required</p>}
         </div>
+
         <div className="field">
-          <label htmlFor="publishedYear">Published Year</label>
+          <strong>Image URL</strong> <br />
+          <input
+            type="text"
+            className="userInput"
+            {...register("url", { required: true })}
+          />
+          {errors.url && <p className="error">Image URL is required</p>}
+        </div>
+
+        <div className="field">
+          <strong>Genre</strong> <br />
+          <select
+            className="userInput"
+            {...register("genre", { required: true })}
+          >
+            <option value="">Select a Genre</option>
+            {genreOptions.map((genre, index) => (
+              <option key={index} value={genre}>
+                {genre
+                  .split("_")
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ")}
+              </option>
+            ))}
+          </select>
+          {errors.genre && <p className="error">Please select a genre</p>}
+        </div>
+
+        <div className="field">
+          <strong>Published Year</strong> <br />
           <input
             type="number"
+            className="userInput"
             {...register("publishedYear", { required: true })}
           />
           {errors.publishedYear && (
             <p className="error">Published Year is required</p>
           )}
         </div>
+
         <div className="field">
-          <label htmlFor="authorName">Author Name</label>
-          <input type="text" {...register("authorName", { required: true })} />
+          <strong>Author Name</strong> <br />
+          <input
+            type="text"
+            className="userInput"
+            {...register("author", { required: true })}
+          />
           {errors.authorName && (
             <p className="error">Author Name is required</p>
           )}
         </div>
-        <div className="field">
-          <label htmlFor="url">Image URL</label>
-          <input type="text" {...register("url", { required: true })} />
-          {errors.url && <p className="error">Image URL is required</p>}
-        </div>
-        <div className="field">
-          <label htmlFor="genre">Genre</label>
-          <select {...register("genre", { required: true })}>
-            <option value="">Select a Genre</option>
-            {genreOptions.map((genre, index) => (
-              <option key={index} value={genre}>
-                {genre}
-              </option>
-            ))}
-          </select>
-          {errors.genre && <p className="error">Please select a genre</p>}
-        </div>
-        <button type="submit">Submit</button>
+
+        <button  className ="bookDonation"  type="submit">Submit</button>
       </form>
     </div>
   );
