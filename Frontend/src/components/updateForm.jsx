@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
-const UpdateForm = ({ currentMeme, setInitiateUpdate, fetchData }) => {
+const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
  
   const {
     register,
@@ -10,11 +10,11 @@ const UpdateForm = ({ currentMeme, setInitiateUpdate, fetchData }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      bookName: currentMeme.bookName || "",
-      url: currentMeme.url || "",
-      genre: currentMeme.genre ? currentMeme.genre.toLowerCase() : "", // Set default genre based on currentMeme
-      publishedYear: currentMeme.publishedYear || "",
-      author: currentMeme.author || "",
+      bookName: currentBook.bookName || "",
+      url: currentBook.url || "",
+      genre: currentBook.genre ? currentBook.genre.toLowerCase() : "", // Set default genre based on currentMeme
+      publishedYear: currentBook.publishedYear || "",
+      author: currentBook.author || "",
     },
   });
 
@@ -33,8 +33,8 @@ const UpdateForm = ({ currentMeme, setInitiateUpdate, fetchData }) => {
 
   const onSubmit = async (data) => {
     try {
-      const meme_id = currentMeme._id;
-      const mood_category = currentMeme.genre;
+      const meme_id = currentBook._id;
+      const mood_category = currentBook.genre;
       console.log(mood_category);
 
       const filteredData = Object.fromEntries(
@@ -59,7 +59,7 @@ const UpdateForm = ({ currentMeme, setInitiateUpdate, fetchData }) => {
 
   return (
     <div className="container">
-      <h1>Update {currentMeme.bookName}</h1>
+      <h1>Update {currentBook.bookName}</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="field">
           <label htmlFor="bookName">Updated Name:</label>
@@ -80,7 +80,7 @@ const UpdateForm = ({ currentMeme, setInitiateUpdate, fetchData }) => {
             {...register("genre", { required: true })}
             defaultValue={
               // currentMeme.genre ? currentMeme.genre.toLowerCase() : ""
-              currentMeme.genre
+              currentBook.genre
             }
           >
             <option value="">Select a Genre</option>
@@ -120,7 +120,7 @@ const UpdateForm = ({ currentMeme, setInitiateUpdate, fetchData }) => {
 };
 
 UpdateForm.propTypes = {
-  currentMeme: PropTypes.object.isRequired,
+  currentBook: PropTypes.object.isRequired,
   setInitiateUpdate: PropTypes.func.isRequired,
   fetchData: PropTypes.func.isRequired,
 };

@@ -1,4 +1,4 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ConfirmationModal from "./delete_Confirmation";
 import UpdateForm from "./updateForm"; // Import the UpdateForm component
 
@@ -49,7 +49,6 @@ const Library = () => {
 
   const handleUpdate = (_id) => {
     const currentItem = data.find((item) => item._id === _id);
-    console.log(currentItem) ;
     setCurrentItem(currentItem); // Set current item data for update
     setInitiateUpdate(true); // Show update form
   };
@@ -60,7 +59,9 @@ const Library = () => {
       .then((res) => res.json())
       .then((deletedData) => {
         console.log("Book deleted:", deletedData);
-        setData(data.filter((book) => book._id !== selectedItemId));
+        setData((currentData) =>
+          currentData.filter((book) => book._id !== selectedItemId)
+        );
         setShowModal(false);
       })
       .catch((err) => {
@@ -111,7 +112,7 @@ const Library = () => {
       )}
       {initiateUpdate && (
         <UpdateForm
-          currentMeme={currentItem} // Pass current item data for update
+          currentBook={currentItem} // Pass current item data for update
           setInitiateUpdate={setInitiateUpdate}
           fetchData={fetchData} // Pass fetchData function
         />
