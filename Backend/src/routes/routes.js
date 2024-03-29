@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { connectDB } = require("../connection/db");
 const { createBookModel } = require("../model/library");
-const { createUserModel } = require("../model/user");
+const { User } = require("../model/user");
 const Joi = require("joi");
 
 // Connect to the database
@@ -73,22 +73,24 @@ router.post("/register", async (req, res) => {
     const { fullname, email, password } = req.body;
 
     // Check if user already exists
-    const existingUser = await createUserModel.findOne({ email });
+    const existingUser = await User.findOne({email});
     if (existingUser) {
       return res.status(400).json({ error: "User already exists" });
     }
 
     // Create a new user
-    const newUser = new createUserModel({ fullname, email, password });
+    const newUser = new User({ fullname, email, password });
     const savedUser = await newUser.save();
 
     res
       .status(201)
       .json({ message: "User registered successfully", user: savedUser });
   } catch (error) {
+    console.error("Error in user registration:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 // Route for user login
 router.post("/login", async (req, res) => {
@@ -96,7 +98,7 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     // Find the user by email
-    const user = await createUserModel.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
@@ -114,7 +116,7 @@ router.post("/login", async (req, res) => {
 
     res.status(200).json({ message: "Login successful", Name: user.fullname });
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Please Register first" });
   }
 });
 

@@ -13,10 +13,7 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "https://s59-personalized-literature.onrender.com/register",
-        data
-      );
+      const response = await axios.post("http://localhost:8080/register", data);
       setResp(response.data);
     } catch (err) {
       console.log(err);
