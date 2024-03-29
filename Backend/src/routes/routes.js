@@ -31,6 +31,33 @@ const userSchema = Joi.object({
   password: Joi.string().required(),
 });
 
+const getYearValidation = () => {
+  return Joi.number()
+    .integer()
+    .min(1000)
+    .max(new Date().getFullYear())
+    .required();
+};
+
+// Update your Joi schemas
+const bookSchema = Joi.object({
+  bookName: Joi.string().required(),
+  url: Joi.string().required(),
+  genre: Joi.string().required(),
+  publishedYear: getYearValidation(),
+  author: Joi.string().required(),
+}).unknown(false);
+
+const partialBookSchema = Joi.object({
+  bookName: Joi.string(),
+  url: Joi.string(),
+  genre: Joi.string(),
+  publishedYear: getYearValidation(),
+  author: Joi.string(),
+})
+  .min(1)
+  .unknown(false);
+
 // Middleware to check if the user is authenticated
 const authenticateUser = (req, res, next) => {
   const loggedInUser = req.cookies.loggedInUser;
