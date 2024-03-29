@@ -3,7 +3,9 @@ import Profile from '../assets/Profile.png';
 import './Navbar.css'; 
 import { Link } from "react-router-dom";
 
+
 const Navbar = () => {
+ 
     return (
       <nav>
         <div id="left-nav">
@@ -15,20 +17,22 @@ const Navbar = () => {
             <Link
               to={"/"}
               className="homeLink"
-              style={{ textDecoration: "none" }}>
+              style={{ textDecoration: "none" }}
+            >
               <p>Home</p>
             </Link>
           </div>
           <div className="inactive">
-            <Link to={"/donate_books"}  style={{textDecoration: "none"}} >
-                    <p>Donate Books</p>
-                    </Link>
+            <Link to={"/donate_books"} style={{ textDecoration: "none" }}>
+              <p>Donate Books</p>
+            </Link>
           </div>
           <div className="inactive">
             <p>About us</p>
           </div>
-
-          <img src={Profile} alt="Profile" className="profile"  />
+          <Link to="/login">
+            <img src={Profile} alt="Profile" className="profile" />
+          </Link>
         </div>
       </nav>
     );

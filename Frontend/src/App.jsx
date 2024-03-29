@@ -4,6 +4,7 @@ import "./App.css";
 import LandingPage from "./components/LandingPage";
 import Library from "./components/Library";
 import DonateBooks from "./components/DonateBooks";
+import Login from "./components/Login";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/library" element={<Library />} />
         <Route path="/donate_books" element={<DonateBooks />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </>
   );
