@@ -124,6 +124,19 @@ router.post("/logout", async (req, res) => {
   res.status(200).json({ message: "Logout successful" });
 });
 
+
+router.get("/:genre", async (req, res) => {
+  try {
+    let BookModel = createBookModel(req.params.genre);
+    const booksData = await BookModel.find();
+    res.send(booksData);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 // Route to post a book (requires authentication)
 router.post(
   "/postBook/:genre",
