@@ -31,15 +31,6 @@ const userSchema = Joi.object({
   password: Joi.string().required(),
 });
 
-// Middleware to check if the user is authenticated
-const authenticateUser = (req, res, next) => {
-  const loggedInUser = req.cookies.loggedInUser;
-  if (!loggedInUser) {
-    return res.status(401).json({ error: "Please log in to use this feature" });
-  }
-  next();
-};
-
 const getYearValidation = () => {
   return Joi.number()
     .integer()
@@ -66,6 +57,19 @@ const partialBookSchema = Joi.object({
 })
   .min(1)
   .unknown(false);
+
+// Middleware to check if the user is authenticated
+const authenticateUser = (req, res, next) => {
+  const loggedInUser = req.cookies.loggedInUser;
+  if (!loggedInUser) {
+    return res.status(401).json({ error: "Please log in to use this feature" });
+  }
+  next();
+};
+
+
+
+
 
 // Route for user registration
 router.post("/register", async (req, res) => {
