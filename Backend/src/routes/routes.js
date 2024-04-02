@@ -5,6 +5,7 @@ const { createBookModel } = require("../model/library");
 const { User } = require("../model/user");
 const Joi = require("joi");
 
+
 // Connect to the database
 connectDB();
 
@@ -60,7 +61,9 @@ const partialBookSchema = Joi.object({
 
 // Middleware to check if the user is authenticated
 const authenticateUser = (req, res, next) => {
-  const loggedInUser = req.cookies.loggedInUser;
+  const loggedInUser = req.cookies.sessionID;
+  console.log(loggedInUser);
+  
   if (!loggedInUser) {
     return res.status(401).json({ error: "Please log in to use this feature" });
   }
@@ -112,12 +115,13 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
+     const sessionID=13;
+     res.cookie('sessionID',sessionID ,{httpOnly:true});
     // Set cookie for authentication (assuming you have a cookie-parser middleware)
-    res.cookie("loggedInUser", user.email, {
-      httpOnly: true,
-      expires: new Date(Date.now() + 60 * 60 * 1000), // Cookie expires in 60 minutes
-    });
-
+    // res.cookie("Token", { email: user.email });
+    //  res.cookie("myCookie", { email: user.email },{ maxAge: 900000, httpOnly: true });
+    
+    
     res.status(200).json({ message: "Login successful", Name: user.fullname });
   } catch (error) {
     res.status(500).json({ error: "Please Register first" });
@@ -126,7 +130,7 @@ router.post("/login", async (req, res) => {
 
 // Route for user logout
 router.post("/logout", async (req, res) => {
-  res.clearCookie("loggedInUser");
+  res.clearCookie("user");
   res.status(200).json({ message: "Logout successful" });
 });
 

@@ -8,7 +8,8 @@ const Library = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [initiateUpdate, setInitiateUpdate] = useState(false); // State to control update form visibility
-  const [currentItem, setCurrentItem] = useState(null); // State to hold data of current item being updated
+  const [currentItem, setCurrentItem] = useState(null);
+  const [blur, setBlur] = useState(false); // State to hold data of current item being updated
 
   const genre = [
     "biopic_books",
@@ -30,7 +31,7 @@ const Library = () => {
   const fetchData = () => {
     if (category !== "") {
       let end = category.toLowerCase();
-      const api = `https://s59-personalized-literature.onrender.com/${end}`;
+      const api = `http://localhost:8080/${end}`;
       fetch(api)
         .then((res) => res.json())
         .then((data) => {
@@ -54,7 +55,7 @@ const Library = () => {
   };
 
   const handleConfirmDelete = () => {
-    const deleteApi = `https://s59-personalized-literature.onrender.com/${category.toLowerCase()}/${selectedItemId}`;
+    const deleteApi = `http://localhost:8080/${category.toLowerCase()}/${selectedItemId}`;
     fetch(deleteApi, { method: "DELETE" })
       .then((res) => res.json())
       .then((deletedData) => {
@@ -63,6 +64,7 @@ const Library = () => {
           currentData.filter((book) => book._id !== selectedItemId)
         );
         setShowModal(false);
+        
       })
       .catch((err) => {
         console.log("Delete Error:", err);
@@ -80,10 +82,20 @@ const Library = () => {
   };
 
   return (
-    <div>
-      <div>
+    <div className="blurContainer">
+      <div
+        className="container1"
+        style={{ filter: blur ? "blur(5px)" : "none" }}
+      >
         {genre.map((genreItem, index) => (
-          <button key={index} onClick={() => handleButtonClick(genreItem)}>
+          <button
+            key={index}
+            className="buttonStyle"
+            onClick={() => {
+              handleButtonClick(genreItem);
+              setBlur(true);
+            }}
+          >
             {genreItem
               .split("_")
               .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -98,11 +110,19 @@ const Library = () => {
             <h3>{book.bookName}</h3>
             <p>Author: {book.author}</p>
             <p>Published Year: {book.publishedYear}</p>
-            <button onClick={() => handleDelete(book._id)}>Delete</button>
-            <button onClick={() => handleUpdate(book._id)}>Update</button>
+            <button
+              className="delete-button"
+              onClick={() => handleDelete(book._id)}
+            >
+              Delete
+            </button>
+            <button 
+            className="update-button"
+            onClick={() => handleUpdate(book._id)}>Update</button>
           </div>
         ))}
       </div>
+
       {showModal && (
         <ConfirmationModal
           message="Are you sure you want to delete?"
@@ -122,3 +142,7 @@ const Library = () => {
 };
 
 export default Library;
+
+
+
+

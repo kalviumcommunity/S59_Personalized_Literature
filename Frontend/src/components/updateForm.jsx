@@ -12,7 +12,7 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
     defaultValues: {
       bookName: currentBook.bookName || "",
       url: currentBook.url || "",
-      genre: currentBook.genre ? currentBook.genre.toLowerCase() : "", // Set default genre based on currentMeme
+      genre: currentBook.genre ? currentBook.genre.toLowerCase() : "", 
       publishedYear: currentBook.publishedYear || "",
       author: currentBook.author || "",
     },
@@ -45,7 +45,7 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
 
       console.log(filteredData);
       const response = await axios.patch(
-        `https://s59-personalized-literature.onrender.com/${mood_category}/${meme_id}`,
+        `http://localhost:8080/${mood_category}/${meme_id}`,
         filteredData
       );
 
@@ -64,13 +64,15 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
         <div className="field">
           <label htmlFor="bookName">Updated Name:</label>
           <input type="text" {...register("bookName", { required: true })} />
-          {errors.bookName && <p className="error">This field is required</p>}
+          {errors.bookName && (
+            <p className="errorMessage">This field is required</p>
+          )}
         </div>
 
         <div className="field">
           <label htmlFor="url">Updated URL:</label>
           <input type="text" {...register("url", { required: true })} />
-          {errors.url && <p className="error">This field is required</p>}
+          {errors.url && <p className="errorMessage">This field is required</p>}
         </div>
 
         <div className="field">
@@ -90,7 +92,9 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
               </option>
             ))}
           </select>
-          {errors.genre && <p className="error">Please select a genre</p>}
+          {errors.genre && (
+            <p className="errorMessage">Please select a genre</p>
+          )}
         </div>
 
         <div className="field">
@@ -100,14 +104,16 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
             {...register("publishedYear", { required: true })}
           />
           {errors.publishedYear && (
-            <p className="error">This field is required</p>
+            <p className="errorMessage">This field is required</p>
           )}
         </div>
 
         <div className="field">
           <label htmlFor="author">Updated Author:</label>
           <input type="text" {...register("author", { required: true })} />
-          {errors.author && <p className="error">This field is required</p>}
+          {errors.author && (
+            <p className="errorMessage">This field is required</p>
+          )}
         </div>
 
         <div className="flex">
