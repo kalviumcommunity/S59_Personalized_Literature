@@ -61,7 +61,9 @@ const partialBookSchema = Joi.object({
 // Middleware to check if the user is authenticated
 const authenticateUser = (req, res, next) => {
   const loggedInUser = req.cookies.user;
+
   console.log(loggedInUser);
+
   if (!loggedInUser) {
     return res.status(401).json({ error: "Please log in to use this feature" });
   }
@@ -114,7 +116,7 @@ router.post("/login", async (req, res) => {
     if (!user || !user.validatePassword(password)) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
-
+    
     res.status(200).json({ message: "Login successful", Name: user.fullname });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
