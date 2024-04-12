@@ -25,11 +25,26 @@ const Login = () => {
         document.cookie = `user=${response.data.Name}; path=/;`;
       } else {
         console.log("Login Failed");
+     
+        if (response.status === 401) {
+         
+          console.log("Unauthorized access. Please check your credentials.");
+        } else if (response.status === 403) {
+          
+          console.log(
+            "Access forbidden. You do not have permission to access this resource."
+          );
+        } else {
+         
+          console.log("Unexpected response status:", response.status);
+        }
       }
     } catch (err) {
-      console.log(err);
+      console.log("Error during login:", err.message);
+  
     }
   };
+
 
   const logout = async () => {
     try {

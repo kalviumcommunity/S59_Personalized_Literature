@@ -46,6 +46,9 @@ const Register = () => {
                 message: "Name should not exceed 30 characters",
               },
             })}
+            minLength={3}
+            maxLength={30}
+            required
           />
           {errors.fullname && (
             <p className="errorMessage">{errors.fullname.message}</p>
@@ -62,6 +65,8 @@ const Register = () => {
                 message: "Invalid email address",
               },
             })}
+            required
+            pattern="^\S+@\S+$"
           />
           {errors.email && (
             <p className="errorMessage">{errors.email.message}</p>
@@ -78,6 +83,8 @@ const Register = () => {
                 message: "Password should be at least 10 characters long",
               },
             })}
+            minLength={10}
+            required
           />
           {errors.password && (
             <p className="errorMessage">{errors.password.message}</p>
