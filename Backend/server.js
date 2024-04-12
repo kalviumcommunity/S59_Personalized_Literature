@@ -15,7 +15,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
 app.use("/", router);
 
 mongoose.connection.once("open", () => {

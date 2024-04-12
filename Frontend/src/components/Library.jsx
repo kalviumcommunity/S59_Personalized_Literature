@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import ConfirmationModal from "./delete_Confirmation";
-import UpdateForm from "./updateForm"; // Import the UpdateForm component
-import axios from "axios"; // Import Axios
+import UpdateForm from "./updateForm"; 
+import axios from "axios"; 
+
 
 const Library = () => {
   const [category, setCategory] = useState("");
   const [data, setData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
-  const [initiateUpdate, setInitiateUpdate] = useState(false); // State to control update form visibility
+
+  const [initiateUpdate, setInitiateUpdate] = useState(false); 
   const [currentItem, setCurrentItem] = useState(null);
-  const [blur, setBlur] = useState(false); // State to hold data of current item being updated
+  const [blur, setBlur] = useState(false); 
+
 
   const genre = [
     "biopic_books",
@@ -25,7 +28,9 @@ const Library = () => {
     "self_help_books",
   ];
 
+
   // Axios interceptor to add user cookie to request headers
+
   axios.interceptors.request.use((config) => {
     const userCookie = document.cookie.replace(
       /(?:(?:^|.*;\s*)user\s*=\s*([^;]*).*$)|^.*$/,
@@ -38,7 +43,7 @@ const Library = () => {
   });
 
   useEffect(() => {
-    fetchData(); // Fetch initial data
+    fetchData(); 
   }, [category]);
 
   const fetchData = () => {
@@ -63,14 +68,16 @@ const Library = () => {
 
   const handleUpdate = (_id) => {
     const currentItem = data.find((item) => item._id === _id);
-    setCurrentItem(currentItem); // Set current item data for update
-    setInitiateUpdate(true); // Show update form
+    setCurrentItem(currentItem); 
+    setInitiateUpdate(true); 
   };
 
   const handleConfirmDelete = () => {
     const deleteApi = `http://localhost:8080/${category.toLowerCase()}/${selectedItemId}`;
     axios
-      .delete(deleteApi,  { withCredentials: true })
+
+      .delete(deleteApi, { withCredentials: true })
+
       .then(() => {
         setData((currentData) =>
           currentData.filter((book) => book._id !== selectedItemId)
@@ -146,9 +153,9 @@ const Library = () => {
       )}
       {initiateUpdate && (
         <UpdateForm
-          currentBook={currentItem} // Pass current item data for update
+          currentBook={currentItem} 
           setInitiateUpdate={setInitiateUpdate}
-          fetchData={fetchData} // Pass fetchData function
+          fetchData={fetchData} 
         />
       )}
     </div>

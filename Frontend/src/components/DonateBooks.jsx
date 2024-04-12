@@ -1,7 +1,6 @@
-
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import "./DonateBook.css"
+import "./DonateBook.css";
 
 const GenreForm = () => {
   const {
@@ -27,7 +26,8 @@ const GenreForm = () => {
       const response = await axios.post(
         `http://localhost:8080/postBook/${data.genre}`,
         data,
-        {withCredentials: true}
+        { withCredentials: true }
+
       );
       console.log(data.genre);
       console.log(response.data);
