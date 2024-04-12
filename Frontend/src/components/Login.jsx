@@ -14,13 +14,16 @@ const Login = () => {
 
   const authUser = async (data) => {
     try {
+
       const response = await axios.post("http://localhost:8080/login", data, {
         withCredentials: true,
       });
+
       if (response.status === 200) {
         console.log("Login Successful");
         setResp(response.data);
         setLoggedIn(true);
+
 
         document.cookie = `user=${response.data.Name}; path=/;`;
       } else {
@@ -48,13 +51,17 @@ const Login = () => {
 
   const logout = async () => {
     try {
+
       const response = await axios.post("http://localhost:8080/logout", null, {
         withCredentials: true,
       });
+
       if (response.status === 200) {
         console.log("Logout Successful");
         setResp(null);
         setLoggedIn(false);
+
+      
 
         document.cookie = `user=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;`;
       } else {

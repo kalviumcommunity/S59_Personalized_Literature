@@ -27,6 +27,7 @@ const GenreForm = () => {
         `http://localhost:8080/postBook/${data.genre}`,
         data,
         { withCredentials: true }
+
       );
       console.log(data.genre);
       console.log(response.data);

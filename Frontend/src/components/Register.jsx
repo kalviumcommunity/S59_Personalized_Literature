@@ -14,11 +14,13 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     try {
+
       const response = await axios.post(
         "http://localhost:8080/register",
         data,
         { withCredentials: true }
       );
+
       setResp(response.data);
     } catch (err) {
       console.log(err);
@@ -92,7 +94,9 @@ const Register = () => {
 
           <div className="buttonContainer">
             <Link to={"/login"}>
-              <button className="buttonStyle">I already have an account</button>
+
+            <button className="buttonStyle">I already have an account</button>
+
             </Link>
             <button className="buttonStyle" type="submit">
               Create Account

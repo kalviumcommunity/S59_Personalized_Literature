@@ -13,6 +13,7 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
+
 const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
   const {
     register,
@@ -22,7 +23,9 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
     defaultValues: {
       bookName: currentBook.bookName || "",
       url: currentBook.url || "",
+
       genre: currentBook.genre ? currentBook.genre.toLowerCase() : "",
+
       publishedYear: currentBook.publishedYear || "",
       author: currentBook.author || "",
     },
@@ -74,11 +77,9 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="field">
           <label htmlFor="bookName">Updated Name:</label>
-          <input
-            type="text"
-            className="inputField"
-            {...register("bookName", { required: true })}
-          />
+
+          <input type="text" className="inputField" {...register("bookName", { required: true })} />
+
           {errors.bookName && (
             <p className="errorMessage">This field is required</p>
           )}
@@ -86,11 +87,10 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
 
         <div className="field">
           <label htmlFor="url">Updated URL:</label>
-          <input
-            type="text"
-            className="inputField"
-            {...register("url", { required: true })}
-          />
+
+
+          <input type="text" className="inputField" {...register("url", { required: true })} />
+
           {errors.url && <p className="errorMessage">This field is required</p>}
         </div>
 
@@ -99,7 +99,9 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
           <select
             className="userInput"
             {...register("genre", { required: true })}
+
             defaultValue={currentBook.genre}
+
           >
             <option value="">Select a Genre</option>
             {genreOptions.map((genre, index) => (
@@ -127,26 +129,19 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
 
         <div className="field">
           <label htmlFor="author">Updated Author:</label>
-          <input
-            type="text"
-            className="inputField"
-            {...register("author", { required: true })}
-          />
+
+          <input type="text" className="inputField" {...register("author", { required: true })} />
+
           {errors.author && (
             <p className="errorMessage">This field is required</p>
           )}
         </div>
 
         <div className="flex">
-          <button
-            className="cancelButton"
-            onClick={() => setInitiateUpdate(false)}
-          >
-            Cancel
-          </button>
-          <button type="submit" className="submitButton">
-            Submit
-          </button>
+
+          <button  className="cancelButton"onClick={() => setInitiateUpdate(false)}>Cancel</button>
+          <button type="submit" className="submitButton">Submit</button>
+
         </div>
       </form>
     </div>

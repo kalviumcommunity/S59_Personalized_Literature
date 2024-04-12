@@ -3,14 +3,17 @@ import ConfirmationModal from "./delete_Confirmation";
 import UpdateForm from "./updateForm"; 
 import axios from "axios"; 
 
+
 const Library = () => {
   const [category, setCategory] = useState("");
   const [data, setData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
+
   const [initiateUpdate, setInitiateUpdate] = useState(false); 
   const [currentItem, setCurrentItem] = useState(null);
   const [blur, setBlur] = useState(false); 
+
 
   const genre = [
     "biopic_books",
@@ -25,7 +28,9 @@ const Library = () => {
     "self_help_books",
   ];
 
-  
+
+  // Axios interceptor to add user cookie to request headers
+
   axios.interceptors.request.use((config) => {
     const userCookie = document.cookie.replace(
       /(?:(?:^|.*;\s*)user\s*=\s*([^;]*).*$)|^.*$/,
@@ -70,7 +75,9 @@ const Library = () => {
   const handleConfirmDelete = () => {
     const deleteApi = `http://localhost:8080/${category.toLowerCase()}/${selectedItemId}`;
     axios
+
       .delete(deleteApi, { withCredentials: true })
+
       .then(() => {
         setData((currentData) =>
           currentData.filter((book) => book._id !== selectedItemId)
