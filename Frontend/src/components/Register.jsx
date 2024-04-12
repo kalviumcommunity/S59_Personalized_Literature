@@ -14,7 +14,7 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("http://localhost:8080/register", data);
+      const response = await axios.post("http://localhost:8080/register", data, { withCredentials: true });
       setResp(response.data);
     } catch (err) {
       console.log(err);

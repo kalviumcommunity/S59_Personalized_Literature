@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import ConfirmationModal from "./delete_Confirmation";
 import UpdateForm from "./updateForm"; // Import the UpdateForm component
+import axios from "axios"; // Import Axios
 
 const Library = () => {
   const [category, setCategory] = useState("");
@@ -24,6 +25,18 @@ const Library = () => {
     "self_help_books",
   ];
 
+  // Axios interceptor to add user cookie to request headers
+  axios.interceptors.request.use((config) => {
+    const userCookie = document.cookie.replace(
+      /(?:(?:^|.*;\s*)user\s*=\s*([^;]*).*$)|^.*$/,
+      "$1"
+    );
+    if (userCookie) {
+      config.headers["Cookie"] = `user=${userCookie}`;
+    }
+    return config;
+  });
+
   useEffect(() => {
     fetchData(); // Fetch initial data
   }, [category]);
@@ -32,10 +45,10 @@ const Library = () => {
     if (category !== "") {
       let end = category.toLowerCase();
       const api = `http://localhost:8080/${end}`;
-      fetch(api)
-        .then((res) => res.json())
-        .then((data) => {
-          setData(data);
+      axios
+        .get(api)
+        .then((res) => {
+          setData(res.data);
         })
         .catch((err) => {
           console.log(err);
@@ -56,15 +69,13 @@ const Library = () => {
 
   const handleConfirmDelete = () => {
     const deleteApi = `http://localhost:8080/${category.toLowerCase()}/${selectedItemId}`;
-    fetch(deleteApi, { method: "DELETE" })
-      .then((res) => res.json())
-      .then((deletedData) => {
-        console.log("Book deleted:", deletedData);
+    axios
+      .delete(deleteApi,  { withCredentials: true })
+      .then(() => {
         setData((currentData) =>
           currentData.filter((book) => book._id !== selectedItemId)
         );
         setShowModal(false);
-        
       })
       .catch((err) => {
         console.log("Delete Error:", err);
@@ -116,9 +127,12 @@ const Library = () => {
             >
               Delete
             </button>
-            <button 
-            className="update-button"
-            onClick={() => handleUpdate(book._id)}>Update</button>
+            <button
+              className="update-button"
+              onClick={() => handleUpdate(book._id)}
+            >
+              Update
+            </button>
           </div>
         ))}
       </div>
@@ -142,7 +156,3 @@ const Library = () => {
 };
 
 export default Library;
-
-
-
-

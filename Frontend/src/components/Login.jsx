@@ -3,8 +3,6 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-
-
 const Login = () => {
   const {
     register,
@@ -13,16 +11,17 @@ const Login = () => {
   } = useForm();
   const [resp, setResp] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
-  
 
   const authUser = async (data) => {
     try {
-      const response = await axios.post("http://localhost:8080/login", data,{withCredentials:true});
+      const response = await axios.post("http://localhost:8080/login", data, { withCredentials: true });
       if (response.status === 200) {
         console.log("Login Successful");
         setResp(response.data);
         setLoggedIn(true);
-        document.cookie = `sessionID=${data.sessionID};  path=/;`;
+
+        
+        document.cookie = `user=${response.data.Name}; path=/;`;
       } else {
         console.log("Login Failed");
       }
@@ -33,11 +32,12 @@ const Login = () => {
 
   const logout = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/logout");
+      const response = await axios.post("http://localhost:8080/logout" , null, {withCredentials : true});
       if (response.status === 200) {
         console.log("Logout Successful");
         setResp(null);
         setLoggedIn(false);
+      
         document.cookie = `user=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;`;
       } else {
         console.log("Logout failed");
@@ -58,7 +58,7 @@ const Login = () => {
   return (
     <div>
       <section className="loginformContainer">
-        { !loggedIn && (
+        {!loggedIn && (
           <form onSubmit={handleSubmit(doSubmit)} className="loginForm">
             <h3>Log In!</h3>
             <p>Share Knowledge, Recommend Books.</p>
@@ -109,12 +109,10 @@ const Login = () => {
         )}
 
         <p>Don't have an account? </p>
-        
+
         <Link to={"/register"} className="registerLink">
           <button className="registerButton">Sign up</button>
         </Link>
-
- 
       </section>
     </div>
   );

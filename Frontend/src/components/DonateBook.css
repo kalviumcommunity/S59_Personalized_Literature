@@ -105,17 +105,27 @@
     justify-content: center;
 }
 
-.delete-button{
+.delete-button,.cancelButton{
     border-radius: 40px;
     background-color: red;
     width: 100px;
     height:20px;
     margin:30px;
 }
-.update-button{
+.update-button,.submitButton{
     background-color: green;
     border-radius: 40px;
     width:100px;
     height:20px;
 
+}
+
+.container3{
+    position:fixed;
+    z-index: 5;
+    top:150px;
+    width:520px;
+    height: 600px;
+    background-color: antiquewhite;
+    right:150px;
 }
