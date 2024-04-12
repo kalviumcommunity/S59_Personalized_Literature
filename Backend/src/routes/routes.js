@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { connectDB } = require("../connection/db");
 const { createBookModel } = require("../model/library");
-const { createUserModel } = require("../model/user");
+const { User } = require("../model/user");
 const Joi = require("joi");
 
 // Connect to the database
@@ -28,7 +28,7 @@ const formatJoiErrors = (error) => {
 const userSchema = Joi.object({
   fullname: Joi.string().required(),
   email: Joi.string().email().required(),
-  password: Joi.string().required(),
+  password: Joi.string().min(6).max(20).required(), // Example: Password length between 6 and 20 characters
 });
 
 const getYearValidation = () => {
@@ -60,7 +60,8 @@ const partialBookSchema = Joi.object({
 
 // Middleware to check if the user is authenticated
 const authenticateUser = (req, res, next) => {
-  const loggedInUser = req.cookies.loggedInUser;
+  const loggedInUser = req.cookies.user;
+  console.log(loggedInUser);
   if (!loggedInUser) {
     return res.status(401).json({ error: "Please log in to use this feature" });
   }
@@ -68,25 +69,37 @@ const authenticateUser = (req, res, next) => {
 };
 
 // Route for user registration
-router.post("/register", async (req, res) => {
+router.post("/register", validateRequest(userSchema), async (req, res) => {
   try {
     const { fullname, email, password } = req.body;
 
-    // Check if user already exists
-    const existingUser = await createUserModel.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ error: "User already exists" });
+    // Check if username is already taken
+    const existingUsername = await User.findOne({ fullname });
+    if (existingUsername) {
+      return res.status(400).json({ error: "Username is already taken" });
+    }
+
+    // Check if email is already registered
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      return res.status(400).json({ error: "Email is already registered" });
     }
 
     // Create a new user
-    const newUser = new createUserModel({ fullname, email, password });
+    const newUser = new User({ fullname, email });
+
+    // Set the password for the user
+    newUser.setPassword(password);
+
+    // Save the user to the database
     const savedUser = await newUser.save();
 
     res
       .status(201)
-      .json({ message: "User registered successfully", user: savedUser });
+      .json({ message: "User registered successfully", data: savedUser });
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -96,32 +109,33 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     // Find the user by email
-    const user = await createUserModel.findOne({ email });
-    if (!user) {
+    const user = await User.findOne({ email });
+
+    if (!user || !user.validatePassword(password)) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
-
-    // Compare the passwords
-    if (user.password !== password) {
-      return res.status(401).json({ error: "Invalid credentials" });
-    }
-
-    // Set cookie for authentication (assuming you have a cookie-parser middleware)
-    res.cookie("loggedInUser", user.email, {
-      httpOnly: true,
-      expires: new Date(Date.now() + 60 * 60 * 1000), // Cookie expires in 60 minutes
-    });
 
     res.status(200).json({ message: "Login successful", Name: user.fullname });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
+    console.log(error);
   }
 });
 
 // Route for user logout
 router.post("/logout", async (req, res) => {
-  res.clearCookie("loggedInUser");
   res.status(200).json({ message: "Logout successful" });
+});
+
+router.get("/:genre", async (req, res) => {
+  try {
+    let BookModel = createBookModel(req.params.genre);
+    const booksData = await BookModel.find();
+    res.send(booksData);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 // Route to post a book (requires authentication)

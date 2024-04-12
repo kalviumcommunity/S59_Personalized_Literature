@@ -2,8 +2,18 @@ import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
+axios.interceptors.request.use((config) => {
+  const userCookie = document.cookie.replace(
+    /(?:(?:^|.*;\s*)user\s*=\s*([^;]*).*$)|^.*$/,
+    "$1"
+  );
+  if (userCookie) {
+    config.headers["Cookie"] = `user=${userCookie}`;
+  }
+  return config;
+});
+
 const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
- 
   const {
     register,
     handleSubmit,
@@ -12,7 +22,7 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
     defaultValues: {
       bookName: currentBook.bookName || "",
       url: currentBook.url || "",
-      genre: currentBook.genre ? currentBook.genre.toLowerCase() : "", // Set default genre based on currentMeme
+      genre: currentBook.genre ? currentBook.genre.toLowerCase() : "",
       publishedYear: currentBook.publishedYear || "",
       author: currentBook.author || "",
     },
@@ -45,8 +55,9 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
 
       console.log(filteredData);
       const response = await axios.patch(
-        `https://s59-personalized-literature.onrender.com/${mood_category}/${meme_id}`,
-        filteredData
+        `http://localhost:8080/${mood_category}/${meme_id}`,
+        filteredData,
+        { withCredentials: true }
       );
 
       console.log(response.data);
@@ -58,19 +69,29 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
   };
 
   return (
-    <div className="container">
+    <div className="container3">
       <h1>Update {currentBook.bookName}</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="field">
           <label htmlFor="bookName">Updated Name:</label>
-          <input type="text" {...register("bookName", { required: true })} />
-          {errors.bookName && <p className="error">This field is required</p>}
+          <input
+            type="text"
+            className="inputField"
+            {...register("bookName", { required: true })}
+          />
+          {errors.bookName && (
+            <p className="errorMessage">This field is required</p>
+          )}
         </div>
 
         <div className="field">
           <label htmlFor="url">Updated URL:</label>
-          <input type="text" {...register("url", { required: true })} />
-          {errors.url && <p className="error">This field is required</p>}
+          <input
+            type="text"
+            className="inputField"
+            {...register("url", { required: true })}
+          />
+          {errors.url && <p className="errorMessage">This field is required</p>}
         </div>
 
         <div className="field">
@@ -78,10 +99,7 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
           <select
             className="userInput"
             {...register("genre", { required: true })}
-            defaultValue={
-              // currentMeme.genre ? currentMeme.genre.toLowerCase() : ""
-              currentBook.genre
-            }
+            defaultValue={currentBook.genre}
           >
             <option value="">Select a Genre</option>
             {genreOptions.map((genre, index) => (
@@ -90,29 +108,45 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
               </option>
             ))}
           </select>
-          {errors.genre && <p className="error">Please select a genre</p>}
+          {errors.genre && (
+            <p className="errorMessage">Please select a genre</p>
+          )}
         </div>
 
         <div className="field">
           <label htmlFor="publishedYear">Updated Published Year:</label>
           <input
             type="number"
+            className="inputField"
             {...register("publishedYear", { required: true })}
           />
           {errors.publishedYear && (
-            <p className="error">This field is required</p>
+            <p className="errorMessage">This field is required</p>
           )}
         </div>
 
         <div className="field">
           <label htmlFor="author">Updated Author:</label>
-          <input type="text" {...register("author", { required: true })} />
-          {errors.author && <p className="error">This field is required</p>}
+          <input
+            type="text"
+            className="inputField"
+            {...register("author", { required: true })}
+          />
+          {errors.author && (
+            <p className="errorMessage">This field is required</p>
+          )}
         </div>
 
         <div className="flex">
-          <button onClick={() => setInitiateUpdate(false)}>Cancel</button>
-          <button type="submit">Submit</button>
+          <button
+            className="cancelButton"
+            onClick={() => setInitiateUpdate(false)}
+          >
+            Cancel
+          </button>
+          <button type="submit" className="submitButton">
+            Submit
+          </button>
         </div>
       </form>
     </div>

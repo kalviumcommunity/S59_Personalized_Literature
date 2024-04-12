@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const {
@@ -14,8 +15,9 @@ const Register = () => {
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
-        "https://s59-personalized-literature.onrender.com/register",
-        data
+        "http://localhost:8080/register",
+        data,
+        { withCredentials: true }
       );
       setResp(response.data);
     } catch (err) {
@@ -24,12 +26,13 @@ const Register = () => {
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <section className="loginformContainer">
+      <form onSubmit={handleSubmit(onSubmit)} className="loginForm">
         <h3>Sign up</h3>
         <p>Become a part of our bibliophilic community</p>
-        <div>
+        <div className="loginInput">
           <input
+            className="inputField"
             type="text"
             placeholder="Enter Your First Name"
             {...register("fullname", {
@@ -44,9 +47,12 @@ const Register = () => {
               },
             })}
           />
-          {errors.fullname && <p>{errors.fullname.message}</p>}
+          {errors.fullname && (
+            <p className="errorMessage">{errors.fullname.message}</p>
+          )}
 
           <input
+            className="inputField"
             type="email"
             placeholder="Enter Email"
             {...register("email", {
@@ -57,9 +63,12 @@ const Register = () => {
               },
             })}
           />
-          {errors.email && <p>{errors.email.message}</p>}
+          {errors.email && (
+            <p className="errorMessage">{errors.email.message}</p>
+          )}
 
           <input
+            className="inputField"
             type="password"
             placeholder="Set up a password"
             {...register("password", {
@@ -70,17 +79,23 @@ const Register = () => {
               },
             })}
           />
-          {errors.password && <p>{errors.password.message}</p>}
+          {errors.password && (
+            <p className="errorMessage">{errors.password.message}</p>
+          )}
 
-          <div>
-            <button>I already have an account</button>
-            <button type="submit">Create Account</button>
+          <div className="buttonContainer">
+            <Link to={"/login"}>
+              <button className="buttonStyle">I already have an account</button>
+            </Link>
+            <button className="buttonStyle" type="submit">
+              Create Account
+            </button>
           </div>
         </div>
       </form>
 
       {respText && <p>{respText.message}</p>}
-    </>
+    </section>
   );
 };
 

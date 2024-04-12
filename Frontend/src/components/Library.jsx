@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import ConfirmationModal from "./delete_Confirmation";
-import UpdateForm from "./updateForm"; // Import the UpdateForm component
+import UpdateForm from "./updateForm"; 
+import axios from "axios"; 
 
 const Library = () => {
   const [category, setCategory] = useState("");
   const [data, setData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
-  const [initiateUpdate, setInitiateUpdate] = useState(false); // State to control update form visibility
-  const [currentItem, setCurrentItem] = useState(null); // State to hold data of current item being updated
+  const [initiateUpdate, setInitiateUpdate] = useState(false); 
+  const [currentItem, setCurrentItem] = useState(null);
+  const [blur, setBlur] = useState(false); 
 
   const genre = [
     "biopic_books",
@@ -23,18 +25,30 @@ const Library = () => {
     "self_help_books",
   ];
 
+  
+  axios.interceptors.request.use((config) => {
+    const userCookie = document.cookie.replace(
+      /(?:(?:^|.*;\s*)user\s*=\s*([^;]*).*$)|^.*$/,
+      "$1"
+    );
+    if (userCookie) {
+      config.headers["Cookie"] = `user=${userCookie}`;
+    }
+    return config;
+  });
+
   useEffect(() => {
-    fetchData(); // Fetch initial data
+    fetchData(); 
   }, [category]);
 
   const fetchData = () => {
     if (category !== "") {
       let end = category.toLowerCase();
-      const api = `https://s59-personalized-literature.onrender.com/${end}`;
-      fetch(api)
-        .then((res) => res.json())
-        .then((data) => {
-          setData(data);
+      const api = `http://localhost:8080/${end}`;
+      axios
+        .get(api)
+        .then((res) => {
+          setData(res.data);
         })
         .catch((err) => {
           console.log(err);
@@ -49,16 +63,15 @@ const Library = () => {
 
   const handleUpdate = (_id) => {
     const currentItem = data.find((item) => item._id === _id);
-    setCurrentItem(currentItem); // Set current item data for update
-    setInitiateUpdate(true); // Show update form
+    setCurrentItem(currentItem); 
+    setInitiateUpdate(true); 
   };
 
   const handleConfirmDelete = () => {
-    const deleteApi = `https://s59-personalized-literature.onrender.com/${category.toLowerCase()}/${selectedItemId}`;
-    fetch(deleteApi, { method: "DELETE" })
-      .then((res) => res.json())
-      .then((deletedData) => {
-        console.log("Book deleted:", deletedData);
+    const deleteApi = `http://localhost:8080/${category.toLowerCase()}/${selectedItemId}`;
+    axios
+      .delete(deleteApi, { withCredentials: true })
+      .then(() => {
         setData((currentData) =>
           currentData.filter((book) => book._id !== selectedItemId)
         );
@@ -80,10 +93,20 @@ const Library = () => {
   };
 
   return (
-    <div>
-      <div>
+    <div className="blurContainer">
+      <div
+        className="container1"
+        style={{ filter: blur ? "blur(5px)" : "none" }}
+      >
         {genre.map((genreItem, index) => (
-          <button key={index} onClick={() => handleButtonClick(genreItem)}>
+          <button
+            key={index}
+            className="buttonStyle"
+            onClick={() => {
+              handleButtonClick(genreItem);
+              setBlur(true);
+            }}
+          >
             {genreItem
               .split("_")
               .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -98,11 +121,22 @@ const Library = () => {
             <h3>{book.bookName}</h3>
             <p>Author: {book.author}</p>
             <p>Published Year: {book.publishedYear}</p>
-            <button onClick={() => handleDelete(book._id)}>Delete</button>
-            <button onClick={() => handleUpdate(book._id)}>Update</button>
+            <button
+              className="delete-button"
+              onClick={() => handleDelete(book._id)}
+            >
+              Delete
+            </button>
+            <button
+              className="update-button"
+              onClick={() => handleUpdate(book._id)}
+            >
+              Update
+            </button>
           </div>
         ))}
       </div>
+
       {showModal && (
         <ConfirmationModal
           message="Are you sure you want to delete?"
@@ -112,9 +146,9 @@ const Library = () => {
       )}
       {initiateUpdate && (
         <UpdateForm
-          currentBook={currentItem} // Pass current item data for update
+          currentBook={currentItem} 
           setInitiateUpdate={setInitiateUpdate}
-          fetchData={fetchData} // Pass fetchData function
+          fetchData={fetchData} 
         />
       )}
     </div>

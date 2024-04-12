@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    
+
     email: {
       type: String,
       required: true,
@@ -22,7 +22,15 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+userSchema.methods.setPassword = function (password) {
+  this.password = crypto.createHash("sha512").update(password).digest("hex");
+};
 
-const User = mongoose.model("User", userSchema);
+userSchema.methods.validatePassword = function (password) {
+  const hash = crypto.createHash("sha512").update(password).digest("hex");
+  return this.password === hash;
+};
+
+const User = mongoose.model("user", userSchema);
 
 module.exports = { User };

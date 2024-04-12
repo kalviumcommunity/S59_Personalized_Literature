@@ -1,7 +1,6 @@
-
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import "./DonateBook.css"
+import "./DonateBook.css";
 
 const GenreForm = () => {
   const {
@@ -25,8 +24,9 @@ const GenreForm = () => {
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
-        `https://s59-personalized-literature.onrender.com/postBook/${data.genre}`,
-        data
+        `http://localhost:8080/postBook/${data.genre}`,
+        data,
+        { withCredentials: true }
       );
       console.log(data.genre);
       console.log(response.data);
@@ -38,7 +38,7 @@ const GenreForm = () => {
   };
 
   return (
-    <div className="container1">
+    <div className="container1 donateformContainer">
       <h1>Add a Book</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="field">
@@ -99,12 +99,12 @@ const GenreForm = () => {
             className="userInput"
             {...register("author", { required: true })}
           />
-          {errors.author && (
-            <p className="error">Author Name is required</p>
-          )}
+          {errors.author && <p className="error">Author Name is required</p>}
         </div>
 
-        <button  className ="bookDonation"  type="submit">Submit</button>
+        <button className="bookDonation" type="submit">
+          Submit
+        </button>
       </form>
     </div>
   );
