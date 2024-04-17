@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import ConfirmationModal from "./delete_Confirmation";
-import UpdateForm from "./updateForm"; 
-import axios from "axios"; 
-
+import UpdateForm from "./updateForm";
+import axios from "axios";
 
 const Library = () => {
   const [category, setCategory] = useState("");
@@ -10,10 +9,9 @@ const Library = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
 
-  const [initiateUpdate, setInitiateUpdate] = useState(false); 
+  const [initiateUpdate, setInitiateUpdate] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
-  const [blur, setBlur] = useState(false); 
-
+  const [blur, setBlur] = useState(false);
 
   const genre = [
     "biopic_books",
@@ -28,22 +26,10 @@ const Library = () => {
     "self_help_books",
   ];
 
-
-  // Axios interceptor to add user cookie to request headers
-
-  axios.interceptors.request.use((config) => {
-    const userCookie = document.cookie.replace(
-      /(?:(?:^|.*;\s*)user\s*=\s*([^;]*).*$)|^.*$/,
-      "$1"
-    );
-    if (userCookie) {
-      config.headers["Cookie"] = `user=${userCookie}`;
-    }
-    return config;
-  });
+  
 
   useEffect(() => {
-    fetchData(); 
+    fetchData();
   }, [category]);
 
   const fetchData = () => {
@@ -68,15 +54,24 @@ const Library = () => {
 
   const handleUpdate = (_id) => {
     const currentItem = data.find((item) => item._id === _id);
-    setCurrentItem(currentItem); 
-    setInitiateUpdate(true); 
+    setCurrentItem(currentItem);
+    setInitiateUpdate(true);
   };
 
   const handleConfirmDelete = () => {
-    const deleteApi = `http://localhost:8080/${category.toLowerCase()}/${selectedItemId}`;
-    axios
+    const tokenCookie = document.cookie
+      .split(";")
+      .find((cookie) => cookie.trim().startsWith("token="));
+    const token = tokenCookie?.split("=")[1];
+    console.log(token);
 
-      .delete(deleteApi, { withCredentials: true })
+    const deleteApi = `http://localhost:8080/${category.toLowerCase()}/${selectedItemId}`;
+    axios.delete(deleteApi, {
+        withCredentials: true,
+        headers: {
+          Authorization: `${token}`,
+        },
+      })
 
       .then(() => {
         setData((currentData) =>
@@ -153,9 +148,9 @@ const Library = () => {
       )}
       {initiateUpdate && (
         <UpdateForm
-          currentBook={currentItem} 
+          currentBook={currentItem}
           setInitiateUpdate={setInitiateUpdate}
-          fetchData={fetchData} 
+          fetchData={fetchData}
         />
       )}
     </div>

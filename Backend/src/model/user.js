@@ -5,7 +5,10 @@ const userSchema = new mongoose.Schema(
   {
     fullname: {
       type: String,
-      required: true,
+      required: [true, 'name is required'],
+      lowercase : true,
+      trim : true,
+      index : true
     },
 
     email: {
@@ -16,7 +19,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       salt: String,
-      required: true,
+      required: [true,'Password is required']
     },
   },
   { timestamps: true }

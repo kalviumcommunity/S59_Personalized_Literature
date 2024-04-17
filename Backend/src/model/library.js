@@ -21,6 +21,10 @@ const bookSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    postedBy : {
+      type: String,
+      required : true,
+    }
   },
   { versionKey: false }
 );
