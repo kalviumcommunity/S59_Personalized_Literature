@@ -15,17 +15,22 @@ const verifyToken = (req, res, next) => {
     return res.status(401).json({ error: "Access denied. Token is required." });
   }
 
-  console.log("Received token:", token); 
+  if (!process.env.SECRET_KEY) {
+    return res
+      .status(500)
+      .json({ error: "Internal server error. Missing SECRET_KEY." });
+  }
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     req.user = decoded;
-    console.log("Decoded token:", decoded); 
+    console.log("Decoded token:", decoded);
     next();
   } catch (error) {
-    console.error("JWT verification error:", error); 
+    console.error("JWT verification error:", error);
     return res.status(401).json({ error: "Invalid token" });
   }
 };
+
 
 const validateRequest = (schema) => {
   return (req, res, next) => {

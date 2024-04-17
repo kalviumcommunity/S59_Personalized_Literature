@@ -23,10 +23,11 @@ const GenreForm = () => {
 
   const onSubmit = async (data) => {
     try {
-        const tokenCookie = document.cookie
-          console.log("Token Cookie:", tokenCookie)
-        const token = tokenCookie?.split("=")[1];
-        console.log("Extracted Cookie:",token) // we got undefined here.)
+           const tokenCookie = document.cookie
+             .split(";")
+             .find((cookie) => cookie.trim().startsWith("token="));
+           const token = tokenCookie?.split("=")[1];
+       
 
       const response = await axios.post(
         `http://localhost:8080/postBook/${data.genre}`,

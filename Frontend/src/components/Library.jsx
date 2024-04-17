@@ -63,7 +63,7 @@ const Library = () => {
       .split(";")
       .find((cookie) => cookie.trim().startsWith("token="));
     const token = tokenCookie?.split("=")[1];
-    console.log(token);
+ 
 
     const deleteApi = `http://localhost:8080/${category.toLowerCase()}/${selectedItemId}`;
     axios.delete(deleteApi, {
