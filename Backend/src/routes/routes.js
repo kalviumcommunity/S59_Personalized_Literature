@@ -4,11 +4,34 @@ const { connectDB } = require("../connection/db");
 const { createBookModel } = require("../model/library");
 const { User } = require("../model/user");
 const Joi = require("joi");
+const jwt = require("jsonwebtoken");
 
-// Connect to the database
 connectDB();
 
-// Middleware for Joi validation
+const verifyToken = (req, res, next) => {
+  const token = req.headers["authorization"] || req.headers["Authorization"];
+
+  if (!token) {
+    return res.status(401).json({ error: "Access denied. Token is required." });
+  }
+
+  if (!process.env.SECRET_KEY) {
+    return res
+      .status(500)
+      .json({ error: "Internal server error. Missing SECRET_KEY." });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    req.user = decoded;
+    console.log("Decoded token:", decoded);
+    next();
+  } catch (error) {
+    console.error("JWT verification error:", error);
+    return res.status(401).json({ error: "Invalid token" });
+  }
+};
+
+
 const validateRequest = (schema) => {
   return (req, res, next) => {
     const { error } = schema.validate(req.body);
@@ -19,16 +42,14 @@ const validateRequest = (schema) => {
   };
 };
 
-// Utility function for formatting Joi error messages
 const formatJoiErrors = (error) => {
   return error.details.map((detail) => detail.message);
 };
 
-// Define user schema for validation
 const userSchema = Joi.object({
   fullname: Joi.string().required(),
   email: Joi.string().email().required(),
-  password: Joi.string().min(6).max(20).required(), // Example: Password length between 6 and 20 characters
+  password: Joi.string().min(6).max(20).required(),
 });
 
 const getYearValidation = () => {
@@ -58,73 +79,70 @@ const partialBookSchema = Joi.object({
   .min(1)
   .unknown(false);
 
-// Middleware to check if the user is authenticated
-const authenticateUser = (req, res, next) => {
-  const loggedInUser = req.cookies.user;
+// const authenticateUser = (req, res, next) => {
+//   const loggedInUser = req.cookies.user;
 
-  console.log(loggedInUser);
+//   if (!loggedInUser) {
+//     return res.status(401).json({ error: "Please log in to use this feature" });
+//   }
+//   next();
+// };
 
-  if (!loggedInUser) {
-    return res.status(401).json({ error: "Please log in to use this feature" });
-  }
-  next();
-};
-
-// Route for user registration
 router.post("/register", validateRequest(userSchema), async (req, res) => {
   try {
     const { fullname, email, password } = req.body;
 
-    // Check if username is already taken
     const existingUsername = await User.findOne({ fullname });
     if (existingUsername) {
       return res.status(400).json({ error: "Username is already taken" });
     }
 
-    // Check if email is already registered
     const existingEmail = await User.findOne({ email });
     if (existingEmail) {
       return res.status(400).json({ error: "Email is already registered" });
     }
 
-    // Create a new user
     const newUser = new User({ fullname, email });
 
-    // Set the password for the user
     newUser.setPassword(password);
 
-    // Save the user to the database
     const savedUser = await newUser.save();
 
-    res
-      .status(201)
-      .json({ message: "User registered successfully", data: savedUser });
+    res.status(201).json({
+      message: "User registered successfully",
+      data: savedUser,
+      clearInput: true,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// Route for user login
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find the user by email
     const user = await User.findOne({ email });
 
     if (!user || !user.validatePassword(password)) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
-    
-    res.status(200).json({ message: "Login successful", Name: user.fullname });
+    const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
+      expiresIn: "1h",
+    });
+    res.cookie("token", token, {
+    });
+
+    res
+      .status(200)
+      .json({ token: token, message: "Login successful", Name: user.fullname });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
     console.log(error);
   }
 });
 
-// Route for user logout
 router.post("/logout", async (req, res) => {
   res.status(200).json({ message: "Logout successful" });
 });
@@ -140,10 +158,9 @@ router.get("/:genre", async (req, res) => {
   }
 });
 
-// Route to post a book (requires authentication)
 router.post(
   "/postBook/:genre",
-  authenticateUser,
+  verifyToken,
   validateRequest(bookSchema),
   async (req, res) => {
     try {
@@ -166,7 +183,7 @@ router.post(
 // Route to update a book (requires authentication)
 router.patch(
   "/:genre/:id",
-  authenticateUser,
+  verifyToken,
   validateRequest(partialBookSchema),
   async (req, res) => {
     try {
@@ -190,7 +207,7 @@ router.patch(
 );
 
 // Route to delete a book (requires authentication)
-router.delete("/:genre/:id", authenticateUser, async (req, res) => {
+router.delete("/:genre/:id", verifyToken, async (req, res) => {
   try {
     let BookModel = createBookModel(req.params.genre);
 

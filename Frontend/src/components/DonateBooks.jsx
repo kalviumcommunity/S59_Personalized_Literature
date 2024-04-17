@@ -23,10 +23,19 @@ const GenreForm = () => {
 
   const onSubmit = async (data) => {
     try {
+           const tokenCookie = document.cookie
+             .split(";")
+             .find((cookie) => cookie.trim().startsWith("token="));
+           const token = tokenCookie?.split("=")[1];
+       
+
       const response = await axios.post(
         `http://localhost:8080/postBook/${data.genre}`,
-        data,
-        { withCredentials: true }
+        data,{
+          headers : {
+            Authorization : `${token}` ,
+          },
+         withCredentials: true, }
 
       );
       console.log(data.genre);

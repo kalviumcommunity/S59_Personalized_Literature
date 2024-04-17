@@ -57,10 +57,19 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
       );
 
       console.log(filteredData);
+       const tokenCookie = document.cookie
+         .split(";")
+         .find((cookie) => cookie.trim().startsWith("token="));
+       const token = tokenCookie?.split("=")[1];
+
       const response = await axios.patch(
         `http://localhost:8080/${mood_category}/${meme_id}`,
         filteredData,
-        { withCredentials: true }
+        { withCredentials: true,
+        headers : {
+          Authorization : `${token}`,
+        },
+      }
       );
 
       console.log(response.data);
