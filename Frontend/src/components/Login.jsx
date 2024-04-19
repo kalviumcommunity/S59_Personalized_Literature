@@ -23,7 +23,7 @@ const authUser = async (data) => {
       {withCredentials: true,
     });
 
-    console.log("Login Response:", response.data); 
+    // console.log("Login Response:", response.data); 
 
     if (response.status === 200) {
       
@@ -71,7 +71,7 @@ const authUser = async (data) => {
 
       
 
-        document.cookie = `user=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;`;
+        document.cookie ="token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       } else {
         console.log("Logout failed");
       }
