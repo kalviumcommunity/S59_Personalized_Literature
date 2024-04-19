@@ -1,9 +1,11 @@
+
 import { useState, useEffect } from "react";
 import ConfirmationModal from "./delete_Confirmation";
 import UpdateForm from "./updateForm";
 import axios from "axios";
 
 const Library = () => {
+  const [filterStatus, setFilterStatus] = useState(false);
   const [category, setCategory] = useState("");
   const [data, setData] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -12,6 +14,8 @@ const Library = () => {
   const [initiateUpdate, setInitiateUpdate] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
   const [blur, setBlur] = useState(false);
+  const [selectedUser, setSelectedUser] = useState("");
+  const [users, setUsers] = useState();
 
   const genre = [
     "biopic_books",
@@ -26,20 +30,25 @@ const Library = () => {
     "self_help_books",
   ];
 
-  
-
   useEffect(() => {
     fetchData();
-  }, [category]);
+  }, [category, selectedUser]);
 
   const fetchData = () => {
     if (category !== "") {
       let end = category.toLowerCase();
-      const api = `http://localhost:8080/${end}`;
+      let apiUrl = `http://localhost:8080/${end}`;
       axios
-        .get(api)
+        .get(apiUrl)
         .then((res) => {
-          setData(res.data);
+          let filteredData = res.data;
+          if (selectedUser) {
+            filteredData = filteredData.filter(
+              (book) => book.postedBy === selectedUser
+            );
+          }
+          setUsers(filteredData);
+          setData(filteredData);
         })
         .catch((err) => {
           console.log(err);
@@ -63,16 +72,15 @@ const Library = () => {
       .split(";")
       .find((cookie) => cookie.trim().startsWith("token="));
     const token = tokenCookie?.split("=")[1];
- 
 
     const deleteApi = `http://localhost:8080/${category.toLowerCase()}/${selectedItemId}`;
-    axios.delete(deleteApi, {
+    axios
+      .delete(deleteApi, {
         withCredentials: true,
         headers: {
           Authorization: `${token}`,
         },
       })
-
       .then(() => {
         setData((currentData) =>
           currentData.filter((book) => book._id !== selectedItemId)
@@ -92,6 +100,7 @@ const Library = () => {
 
   const handleButtonClick = (genre) => {
     setCategory(genre);
+    setFilterStatus((prev) => !prev);
   };
 
   return (
@@ -106,6 +115,7 @@ const Library = () => {
             className="buttonStyle"
             onClick={() => {
               handleButtonClick(genreItem);
+
               setBlur(true);
             }}
           >
@@ -116,13 +126,26 @@ const Library = () => {
           </button>
         ))}
       </div>
+
       <div className="books-container">
+        {filterStatus && (
+          <select onChange={(e) => setSelectedUser(e.target.value)}>
+            <option value="">All Users</option>
+
+            {[...new Set(data.map((book) => book.postedBy))].map((user) => (
+              <option key={user} value={user}>
+                {user}
+              </option>
+            ))}
+          </select>
+        )}
         {data.map((book, index) => (
           <div className="book" key={index}>
             <img src={book.url} alt={book.bookName} />
             <h3>{book.bookName}</h3>
             <p>Author: {book.author}</p>
             <p>Published Year: {book.publishedYear}</p>
+            <p>Posted By : {book.postedBy} </p>
             <button
               className="delete-button"
               onClick={() => handleDelete(book._id)}
