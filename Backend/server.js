@@ -8,7 +8,8 @@ const port = 8080;
 
 app.use(cookieParser());
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: "http://localhost:5174", credentials: true }));
+
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Credentials", "true");

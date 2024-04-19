@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 
 connectDB();
 
-const verifyToken = (req, res, next) => {
+const verifyToken = async (req, res, next) => {
   const token = req.headers["authorization"] || req.headers["Authorization"];
 
   if (!token) {
@@ -22,15 +22,25 @@ const verifyToken = (req, res, next) => {
   }
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
+     if (!decoded.userId) {
+       return res
+         .status(401)
+         .json({ error: "Invalid token. User ID not found." });
+     }
+     
     req.user = decoded;
-    console.log("Decoded token:", decoded);
+    const user = await User.findOne({ _id: decoded.userId });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const username = user.fullname;
+    req.username = username;
     next();
   } catch (error) {
     console.error("JWT verification error:", error);
     return res.status(401).json({ error: "Invalid token" });
   }
 };
-
 
 const validateRequest = (schema) => {
   return (req, res, next) => {
@@ -79,15 +89,6 @@ const partialBookSchema = Joi.object({
   .min(1)
   .unknown(false);
 
-// const authenticateUser = (req, res, next) => {
-//   const loggedInUser = req.cookies.user;
-
-//   if (!loggedInUser) {
-//     return res.status(401).json({ error: "Please log in to use this feature" });
-//   }
-//   next();
-// };
-
 router.post("/register", validateRequest(userSchema), async (req, res) => {
   try {
     const { fullname, email, password } = req.body;
@@ -131,8 +132,7 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
       expiresIn: "1h",
     });
-    res.cookie("token", token, {
-    });
+    res.cookie("token", token, {});
 
     res
       .status(200)
@@ -164,13 +164,16 @@ router.post(
   validateRequest(bookSchema),
   async (req, res) => {
     try {
+      console.log(req.username);
       let BookModel = createBookModel(req.params.genre);
 
       if (Array.isArray(req.body)) {
-        const savedBooks = await BookModel.insertMany(req.body);
+        const savedBooks = await BookModel.insertMany(
+          req.body.map((book) => ({ ...book, postedBy: req.username }))
+        );
         res.status(201).json(savedBooks);
       } else {
-        const newBook = new BookModel(req.body);
+        const newBook = new BookModel({ ...req.body, postedBy: req.username });
         const savedNewBook = await newBook.save();
         res.status(201).json(savedNewBook);
       }
@@ -179,6 +182,7 @@ router.post(
     }
   }
 );
+
 
 // Route to update a book (requires authentication)
 router.patch(

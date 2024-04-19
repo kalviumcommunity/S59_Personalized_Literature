@@ -40,7 +40,7 @@ const GenreForm = () => {
       );
       console.log(data.genre);
       console.log(response.data);
-      // Handle success, e.g., show a success message
+      
     } catch (error) {
       console.error("Error:", error);
       // Handle error, e.g., show an error message
