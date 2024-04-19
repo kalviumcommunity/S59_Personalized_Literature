@@ -22,8 +22,17 @@ const verifyToken = async (req, res, next) => {
   }
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
+     if (!decoded.userId) {
+       return res
+         .status(401)
+         .json({ error: "Invalid token. User ID not found." });
+     }
+     
     req.user = decoded;
     const user = await User.findOne({ _id: decoded.userId });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
     const username = user.fullname;
     req.username = username;
     next();
