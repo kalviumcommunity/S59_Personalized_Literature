@@ -8,7 +8,7 @@ const port = 8080;
 
 app.use(cookieParser());
 app.use(express.json());
-const origin =  "https://s59personalizedliterature-diwanshu.netlify.app/" || "http://localhost:5173"
+const origin =  "http://localhost:5173"
 app.use(cors({ origin , credentials: true }));
 
 app.use((req, res, next) => {
