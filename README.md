@@ -18,7 +18,6 @@ The main objective of this project is to offer personalized book recommendations
 4. **Responsive Design:**
    - The application will provide a seamless experience across various devices.
   
-     **Deployed link(Client Side)** : https://s59personalizedliterature-diwanshu.netlify.app/
-  
+     **Deployed link(Client Side)** : is in update phase
      **Deployed link** :(https://s59-personalized-literature.onrender.com/biopic_books)
 
