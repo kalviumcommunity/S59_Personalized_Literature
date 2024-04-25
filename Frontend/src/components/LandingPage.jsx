@@ -1,11 +1,13 @@
-import Navbar from "./Navbar.jsx";
+
+import { Link } from "react-router-dom";
+
 import "./LandingPage.css";
 import LandingImage from "../assets/landingImage.jpg";
 
 function LandingPage() {
   return (
     <div className="landingDiv">
-      <Navbar />
+
 
       <div className="container">
         <img src={LandingImage} alt="LandingImage" className="LandingImage" />
@@ -17,7 +19,11 @@ function LandingPage() {
           </p>
         </div>
       </div>
-      <button className="landingPageButton">Library</button>
+
+      <Link to={"/library"} className="libraryLink">
+        <button className="landingPageButton">Library</button>
+      </Link>
+
     </div>
   );
 }

@@ -10,7 +10,8 @@ nav {
     justify-content: space-between;
     align-items: center;
     box-shadow: 3px 3px 5px rgb(170, 170, 170);
-    position: sticky;
+    position: fixed;
+    width: 100vw;
     top: 0;
     z-index: 2;
 }
