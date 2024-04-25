@@ -1,3 +1,4 @@
+
 import Image from '../assets/bgImg.jpeg';
 import Profile from '../assets/Profile.png';
 import './Navbar.css'; 
@@ -36,6 +37,7 @@ const Navbar = () => {
         </div>
       </nav>
     );
+
 };
 
 export default Navbar;

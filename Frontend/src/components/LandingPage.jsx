@@ -1,10 +1,14 @@
+
 import { Link } from "react-router-dom";
+
 import "./LandingPage.css";
 import LandingImage from "../assets/landingImage.jpg";
 
 function LandingPage() {
   return (
     <div className="landingDiv">
+
+
       <div className="container">
         <img src={LandingImage} alt="LandingImage" className="LandingImage" />
         <div id="welcome">
@@ -15,9 +19,11 @@ function LandingPage() {
           </p>
         </div>
       </div>
+
       <Link to={"/library"} className="libraryLink">
         <button className="landingPageButton">Library</button>
       </Link>
+
     </div>
   );
 }

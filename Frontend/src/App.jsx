@@ -1,3 +1,4 @@
+
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import "./App.css";
@@ -7,9 +8,11 @@ import DonateBooks from "./components/DonateBooks";
 import Login from "./components/Login";
 import Register from "./components/Register";
 
+
 function App() {
   return (
     <>
+
       <Navbar />
 
       <Routes>
@@ -19,6 +22,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register/>}/>
       </Routes>
+
     </>
   );
 }
