@@ -11,5 +11,14 @@ Here's what sets us apart:
 
 **Intelligent Recommendations**: Our sophisticated system analyzes your genre preferences to suggest books you'll truly enjoy.
 
-**Device-Agnostic Design**: Enjoy a smooth and intuitive experience, regardless of whether you're reading on your phone, tablet, or computer.
+
+3. **Book Recommendations:**
+   - Based on the selected genre, users will receive a list of recommended books.
+
+4. **Responsive Design:**
+   - The application will provide a seamless experience across various devices.
+  
+     **Deployed link(Client Side)** : is in update phase
+     **Deployed link** :(https://s59-personalized-literature.onrender.com/biopic_books)
+
 

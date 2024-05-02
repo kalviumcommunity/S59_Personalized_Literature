@@ -1,0 +1,131 @@
+.container1{
+    display: flex;
+   place-items : center;
+    flex-direction: column;
+     margin:190px;
+}
+
+.error{
+    color: red;
+}
+
+.userInput {
+    width : 500px;
+    height:30px;
+    font-size: 15px;
+    margin-right: 50px;
+}
+
+.field {
+    margin: 10px;
+}
+
+.bookDonation{
+     text-align: center;
+     cursor: pointer;
+     height:30px;
+     width: 80px;
+     border-radius: 40px;
+     margin: 30px;
+     background-color: greenyellow;
+     color: black
+}
+
+.container{
+    margin-top: 10px;
+}
+
+.buttonStyle,.loginButton,.registerButton{
+    border-radius: 40px;
+    background-color: rgb(47, 227, 255);
+    color: black;
+    cursor: pointer;
+    height: 30px;
+    width: 200px;
+    margin: 10px;
+}
+
+.books-container{
+   display: flex;
+   place-items: center;
+   flex-direction: column;
+   position: absolute;
+    top:150px;
+    left: 30vw;
+    width:50vw;
+    background-color:aliceblue;
+    color: black;
+    }
+    .book Img{
+        height: 300px;
+        width: 450px;
+    }
+   
+.loginformContainer{
+    margin:150px;
+    display: flex;
+    width: 50vw; 
+    text-align: center; 
+    height: 70vh;
+    border-style:double;
+    place-items: center;
+    flex-direction: column;
+}
+.loginForm h3{
+    font-size: 40px;
+    font-family: 'Times New Roman', Times, serif;
+}
+.loginForm p {
+    font-size: 20px;
+    font-family: cursive;
+    }
+
+   
+
+
+.loginInput{
+    display: flex;
+    place-items: center;
+    flex-direction: column;
+   
+}
+.errorMessage{
+    color:Red;
+}
+
+.inputField{
+    width: 300px;
+    height: 35px;
+    margin: 15px;
+    text-align: center;
+}
+.buttonContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.delete-button,.cancelButton{
+    border-radius: 40px;
+    background-color: red;
+    width: 100px;
+    height:20px;
+    margin:30px;
+}
+.update-button,.submitButton{
+    background-color: green;
+    border-radius: 40px;
+    width:100px;
+    height:20px;
+
+}
+
+.container3{
+    position:fixed;
+    z-index: 5;
+    top:150px;
+    width:520px;
+    height: 600px;
+    background-color: antiquewhite;
+    right:150px;
+}
