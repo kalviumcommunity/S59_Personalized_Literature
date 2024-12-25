@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 
 const Register = () => {
   const {
@@ -12,16 +12,26 @@ const Register = () => {
 
   const [respText, setResp] = useState(null);
 
+  const navigate = useNavigate(); // Initialize useNavigate
+
   const onSubmit = async (data) => {
     try {
-
       const response = await axios.post(
-        "http://localhost:8080/register",
+        "http://localhost:8080/userRoutes/register",
         data,
         { withCredentials: true }
       );
 
       setResp(response.data);
+
+      if (response.status === 201) {
+        console.log("Registration Successful");
+        
+        // Redirect to login page after 2 seconds
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -36,7 +46,7 @@ const Register = () => {
           <input
             className="inputField"
             type="text"
-            placeholder="Enter Your First Name"
+            placeholder="Enter Your Full Name"
             {...register("fullname", {
               required: "Please enter your full name",
               minLength: {
@@ -48,8 +58,6 @@ const Register = () => {
                 message: "Name should not exceed 30 characters",
               },
             })}
-            minLength={3}
-            maxLength={30}
             required
           />
           {errors.fullname && (
@@ -68,7 +76,6 @@ const Register = () => {
               },
             })}
             required
-            pattern="^\S+@\S+$"
           />
           {errors.email && (
             <p className="errorMessage">{errors.email.message}</p>
@@ -85,7 +92,6 @@ const Register = () => {
                 message: "Password should be at least 10 characters long",
               },
             })}
-            minLength={10}
             required
           />
           {errors.password && (
@@ -94,9 +100,7 @@ const Register = () => {
 
           <div className="buttonContainer">
             <Link to={"/login"}>
-
-            <button className="buttonStyle">I already have an account</button>
-
+              <button className="buttonStyle">I already have an account</button>
             </Link>
             <button className="buttonStyle" type="submit">
               Create Account
