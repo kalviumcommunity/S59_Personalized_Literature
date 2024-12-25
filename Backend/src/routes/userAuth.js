@@ -3,7 +3,7 @@ const { User } = require("../Model/user");
 
 
 const verifyToken = async (req, res, next) => {
-  const token = req.headers["authorization"] || req.headers["Authorization"];
+  const token = req?.cookies?.token
 
   if (!token) {
     return res.status(401).json({ error: "Access denied. Token is required." });
