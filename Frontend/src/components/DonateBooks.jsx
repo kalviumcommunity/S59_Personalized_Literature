@@ -30,7 +30,7 @@ const GenreForm = () => {
        
 
       const response = await axios.post(
-        `http://localhost:8080/postBook/${data.genre}`,
+        `http://localhost:8080/bookRoutes/postBook/${data.genre}`,
         data,{
           headers : {
             Authorization : `${token}` ,
@@ -43,7 +43,7 @@ const GenreForm = () => {
       
     } catch (error) {
       console.error("Error:", error);
-      // Handle error, e.g., show an error message
+   
     }
   };
 

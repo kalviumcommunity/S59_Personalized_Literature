@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import axios from "axios";
 
 const Login = () => {
@@ -12,55 +12,57 @@ const Login = () => {
   const [resp, setResp] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
 
+  const navigate = useNavigate(); // Initialize useNavigate
+
   function getExpirationDate(days) {
     const now = new Date();
     now.setDate(now.getDate() + days);
     return now.toUTCString();
   }
-const authUser = async (data) => {
-  try {
-    const response = await axios.post("http://localhost:8080/login", data, 
-      {withCredentials: true,
-    });
 
-    // console.log("Login Response:", response.data); 
+  const authUser = async (data) => {
+    try {
+      const response = await axios.post("http://localhost:8080/userRoutes/login", data, {
+        withCredentials: true,
+      });
 
-    if (response.status === 200) {
-      
-      if (response.data && response.data.token) {
-        const token = response.data.token;
-        console.log("Login Successful");
-        document.cookie = `token=${token}; expires=${getExpirationDate(1)}`;
+      if (response.status === 200) {
+        if (response.data && response.data.token) {
+          const token = response.data.token;
+          console.log("Login Successful");
+          document.cookie = `token=${token}; expires=${getExpirationDate(1)}`;
 
-        setResp(response.data);
-        setLoggedIn(true);
+          setResp(response.data);
+          setLoggedIn(true);
+
+        
+          setTimeout(() => {
+            navigate("/"); 
+          }, 1000);
+        } else {
+          console.log("Token not found in response data");
+        }
       } else {
-        console.log("Token not found in response data");
-      }
-    } else {
-      console.log("Login Failed");
+        console.log("Login Failed");
 
-      if (response.status === 401) {
-        console.log("Unauthorized access. Please check your credentials.");
-      } else if (response.status === 403) {
-        console.log(
-          "Access forbidden. You do not have permission to access this resource."
-        );
-      } else {
-        console.log("Unexpected response status:", response.status);
+        if (response.status === 401) {
+          console.log("Unauthorized access. Please check your credentials.");
+        } else if (response.status === 403) {
+          console.log(
+            "Access forbidden. You do not have permission to access this resource."
+          );
+        } else {
+          console.log("Unexpected response status:", response.status);
+        }
       }
+    } catch (err) {
+      console.log("Error during login:", err.message);
     }
-  } catch (err) {
-    console.log("Error during login:", err.message);
-  }
-};
-
-
+  };
 
   const logout = async () => {
     try {
-
-      const response = await axios.post("http://localhost:8080/logout", null, {
+      const response = await axios.post("http://localhost:8080/userRoutes/logout", null, {
         withCredentials: true,
       });
 
@@ -69,9 +71,7 @@ const authUser = async (data) => {
         setResp(null);
         setLoggedIn(false);
 
-      
-
-        document.cookie ="token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       } else {
         console.log("Logout failed");
       }

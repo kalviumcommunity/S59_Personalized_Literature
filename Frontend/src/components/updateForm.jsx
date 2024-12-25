@@ -63,7 +63,7 @@ const UpdateForm = ({ currentBook, setInitiateUpdate, fetchData }) => {
        const token = tokenCookie?.split("=")[1];
 
       const response = await axios.patch(
-        `http://localhost:8080/${mood_category}/${meme_id}`,
+        `http://localhost:8080/bookRoutes/${mood_category}/${meme_id}`,
         filteredData,
         { withCredentials: true,
         headers : {

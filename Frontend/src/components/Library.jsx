@@ -37,7 +37,7 @@ const Library = () => {
   const fetchData = () => {
     if (category !== "") {
       let end = category.toLowerCase();
-      let apiUrl = `http://localhost:8080/${end}`;
+      let apiUrl = `http://localhost:8080/bookRoutes/${end}`;
       axios
         .get(apiUrl)
         .then((res) => {
@@ -73,7 +73,7 @@ const Library = () => {
       .find((cookie) => cookie.trim().startsWith("token="));
     const token = tokenCookie?.split("=")[1];
 
-    const deleteApi = `http://localhost:8080/${category.toLowerCase()}/${selectedItemId}`;
+    const deleteApi = `http://localhost:8080/bookRoutes/${category.toLowerCase()}/${selectedItemId}`;
     axios
       .delete(deleteApi, {
         withCredentials: true,
